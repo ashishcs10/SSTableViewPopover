@@ -2,7 +2,6 @@
 
 ## Usage
 `#import "UITableView+Popover.h"`
-`UITableView+Popover.h`
 
 ```objective-c
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
