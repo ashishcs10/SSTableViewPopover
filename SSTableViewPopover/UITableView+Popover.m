@@ -165,7 +165,7 @@ static const char *PopoverTapGestureKey = "PopoverTapGestureKey";
             button.backgroundColor = [UIColor clearColor];
             [button setTitle:obj.name forState:UIControlStateNormal];
             button.titleLabel.font = [UIFont systemFontOfSize:14];
-            [button setImage:obj.image forState:UIControlStateNormal];
+            [button setImage:[self ss_imageWithColor:[UIColor whiteColor] image:obj.image] forState:UIControlStateNormal];
             [button addTarget:self action:@selector(ss_buttonAction:) forControlEvents:UIControlEventTouchUpInside];
             [popover addSubview:button];
         }];
