@@ -21,7 +21,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor orangeColor];
+    self.view.backgroundColor = [UIColor whiteColor];
     self.data = [[NSMutableArray alloc]init];
     for (NSInteger i = 0; i<3; i++) {
         NSMutableArray *array = [NSMutableArray array];
@@ -46,7 +46,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 70;
+    return 50;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -63,16 +63,17 @@
 
 
 - (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
-    return 100;
+    return 70;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 100;
+    return 70;
 }
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UILabel *header = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
-    header.backgroundColor = [UIColor yellowColor];
+    header.textColor = [UIColor whiteColor];
+    header.backgroundColor = [UIColor colorWithRed:18/255.0 green:53/255.0 blue:85/255.0 alpha:1];
     header.textAlignment = NSTextAlignmentCenter;
     header.text = [NSString stringWithFormat:@"Header:%ld",section];
     return header;
@@ -80,14 +81,14 @@
 
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UILabel *footer = [[UILabel alloc]initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 30)];
-    footer.backgroundColor = [UIColor cyanColor];
+    footer.backgroundColor = [UIColor colorWithRed:209/255.0 green:73/255.0 blue:78/255.0 alpha:1];
+    footer.textColor = [UIColor whiteColor];
     footer.textAlignment = NSTextAlignmentCenter;
     footer.text = [NSString stringWithFormat:@"Footer:%ld",section];
     return footer;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
     NSArray *names = @[@"Reply",@"Share",@"Copy",@"Report"];
     NSArray *images = @[@"popover_reply",@"popover_share",@"popover_copy",@"popover_report"];
     NSMutableArray *items = [NSMutableArray array];

@@ -28,9 +28,6 @@ typedef NS_ENUM(NSInteger,TableViewPopoverDirection) {
     TableViewPopoverDirectionDown,
 };
 
-
-
-
 @interface PopoverButton : UIButton
 
 @end
@@ -117,7 +114,7 @@ typedef NS_ENUM(NSInteger,TableViewPopoverDirection) {
     [roundPath addLineToPoint:o];
     [roundPath addLineToPoint:CGPointMake(p.x+14, p.y)];
     [roundPath closePath];
-    [[UIColor colorWithRed:0 green:0 blue:0 alpha:0.8]setFill];
+    [[UIColor colorWithRed:0 green:0 blue:0 alpha:0.85]setFill];
     [roundPath fill];
 }
 
@@ -125,14 +122,12 @@ typedef NS_ENUM(NSInteger,TableViewPopoverDirection) {
 
 
 static const char *PopoverKey = "PopoverKey";
-
-@interface UITableView ()
-@end
+static const char *PopoverItemsKey = "PopoverItemsKey";
+static const char *PopoverTapGestureKey = "PopoverTapGestureKey";
 
 @implementation UITableView (Popover)
 
 - (void)showPopoverWithItems:(NSArray<PopoverItem *> *)items forIndexPath:(NSIndexPath *)indexPath {
-    self.scrollEnabled = NO;
     NSArray *visibleIndexPaths = [self indexPathsForVisibleRows];
     __block BOOL flag = NO;
     [visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath *ip, NSUInteger idx, BOOL *stop) {
@@ -144,6 +139,12 @@ static const char *PopoverKey = "PopoverKey";
     if (!flag) {
         return;
     }
+    NSArray *popoverItems = objc_getAssociatedObject(self, PopoverItemsKey);
+    if (popoverItems == nil) {
+        popoverItems = [items copy];
+        objc_setAssociatedObject(self, PopoverItemsKey, popoverItems, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    self.scrollEnabled = NO;
     CGRect rect = [self rectForRowAtIndexPath:indexPath];
     TableViewPopover *popover = objc_getAssociatedObject(self, PopoverKey);
     if (popover == nil) {
@@ -177,23 +178,52 @@ static const char *PopoverKey = "PopoverKey";
     [self bringSubviewToFront:popover];
     popover.frame = popoverFrame;
     popover.direction = direction;
-    CAKeyframeAnimation *ani = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
-    ani.values = @[[NSValue valueWithCATransform3D:CATransform3DIdentity],
+    CAKeyframeAnimation *scaleAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform"];
+    scaleAnimation.values = @[[NSValue valueWithCATransform3D:CATransform3DIdentity],
                    [NSValue valueWithCATransform3D:CATransform3DMakeScale(1.075, 1.075, 1)],
                    [NSValue valueWithCATransform3D:CATransform3DIdentity]];
-    ani.keyTimes = @[@(0),@(0.7),@(1)];
-    CABasicAnimation *ani1 = [CABasicAnimation animationWithKeyPath:@"hidden"];
-    ani1.toValue = [NSNumber numberWithBool:NO];
-    CAAnimationGroup *g = [CAAnimationGroup animation];
-    g.animations = @[ani,ani1];
-    g.duration = 0.3;
-    g.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    g.repeatCount = 1;
+    scaleAnimation.keyTimes = @[@(0),@(0.7),@(1)];
+    CABasicAnimation *hiddenAnimation = [CABasicAnimation animationWithKeyPath:@"hidden"];
+    hiddenAnimation.toValue = [NSNumber numberWithBool:NO];
+    CAAnimationGroup *groupAnimation = [CAAnimationGroup animation];
+    groupAnimation.animations = @[scaleAnimation,hiddenAnimation];
+    groupAnimation.duration = 0.3;
+    groupAnimation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    groupAnimation.repeatCount = 1;
     popover.layer.hidden = NO;
-    [popover.layer addAnimation:g forKey:@"ani"];
+    [popover.layer addAnimation:groupAnimation forKey:@"ani"];
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(ss_tap:)];
     [self addGestureRecognizer:tap];
+    objc_setAssociatedObject(self, PopoverTapGestureKey, tap, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
+
+#pragma mark Action
+
+- (void)ss_buttonAction:(PopoverButton *)sender {
+    NSArray *popoverItems = objc_getAssociatedObject(self, PopoverItemsKey);
+    PopoverItem *popoverItem = popoverItems[sender.tag];
+    if (popoverItem.handler) {
+        popoverItem.handler(popoverItem);
+    }
+    [self ss_hide];
+}
+
+- (void)ss_tap:(UITapGestureRecognizer *)tap {
+    [self ss_hide];
+}
+
+- (void)ss_hide {
+    TableViewPopover *popover = objc_getAssociatedObject(self, PopoverKey);
+    popover.layer.hidden = YES;
+    self.scrollEnabled = YES;
+    UITapGestureRecognizer *tap = objc_getAssociatedObject(self, PopoverTapGestureKey);
+    [self removeGestureRecognizer:tap];
+    objc_setAssociatedObject(self, PopoverTapGestureKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
+
+//Blend image with whitecolor.
 
 - (UIImage *)ss_imageWithColor:(UIColor *)color image:(UIImage *)image {
     UIGraphicsBeginImageContextWithOptions(image.size, NO, image.scale);
@@ -208,18 +238,6 @@ static const char *PopoverKey = "PopoverKey";
     UIImage*newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
-}
-
-- (void)ss_buttonAction:(PopoverButton *)sender {
-    
-}
-
-- (void)ss_tap:(UITapGestureRecognizer *)tap {
-    NSLog(@"tap");
-    TableViewPopover *popover = objc_getAssociatedObject(self, PopoverKey);
-    popover.layer.hidden = YES;
-    self.scrollEnabled = YES;
-    [self removeGestureRecognizer:tap];
 }
 
 @end
