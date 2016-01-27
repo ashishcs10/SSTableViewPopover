@@ -93,7 +93,7 @@
     NSArray *images = @[@"popover_reply",@"popover_share",@"popover_copy",@"popover_report"];
     NSMutableArray *items = [NSMutableArray array];
     for (NSInteger i = 0; i<names.count; i++) {
-        PopoverItem *item = [[PopoverItem alloc]initWithName:names[i] image:[UIImage imageNamed:images[i]] selectedHandler:^(PopoverItem *popoverItem) {
+        PopoverItem *item = [PopoverItem itemWithName:names[i] image:[UIImage imageNamed:images[i]] selectedHandler:^(PopoverItem *popoverItem) {
             NSLog(@"%@===%@",popoverItem.name,indexPath);
         }];
         [items addObject:item];

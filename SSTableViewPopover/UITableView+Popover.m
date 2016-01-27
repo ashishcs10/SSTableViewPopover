@@ -11,14 +11,12 @@
 
 @implementation PopoverItem
 
-- (instancetype)initWithName:(NSString *)name image:(UIImage *)image selectedHandler:(PopoverItemSelectHandler)handler {
-    self = [super init];
-    if (self) {
-        _name = [name copy];
-        _image = image;
-        _handler = [handler copy];
-    }
-    return self;
++ (instancetype)itemWithName:(NSString *)name image:(UIImage *)image selectedHandler:(PopoverItemSelectHandler)handler {
+    PopoverItem *item = [[PopoverItem alloc]init];
+    [item setValue:name forKey:@"name"];
+    [item setValue:image forKey:@"image"];
+    [item setValue:handler forKey:@"handler"];
+    return item;
 }
 
 @end

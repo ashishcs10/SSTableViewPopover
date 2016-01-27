@@ -10,7 +10,7 @@
 
 @class PopoverItem;
 
-typedef void(^PopoverItemSelectHandler)(PopoverItem *item);
+typedef void(^PopoverItemSelectHandler)(PopoverItem *popoverItem);
 
 @interface PopoverItem : NSObject
 
@@ -18,13 +18,14 @@ typedef void(^PopoverItemSelectHandler)(PopoverItem *item);
 @property (nonatomic,readonly,strong) UIImage *image;
 @property (nonatomic,readonly,  copy) PopoverItemSelectHandler handler;
 
-- (instancetype)initWithName:(NSString *)name
++ (instancetype)itemWithName:(NSString *)name
                        image:(UIImage *)image
              selectedHandler:(PopoverItemSelectHandler)handler;
 
 @end
 
 @interface UITableView (Popover)
+
 
 - (void)showPopoverWithItems:(NSArray <PopoverItem *>*)items
                 forIndexPath:(NSIndexPath *)indexPath;
