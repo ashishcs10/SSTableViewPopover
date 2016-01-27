@@ -128,6 +128,14 @@ static const char *PopoverTapGestureKey = "PopoverTapGestureKey";
 @implementation UITableView (Popover)
 
 - (void)showPopoverWithItems:(NSArray<PopoverItem *> *)items forIndexPath:(NSIndexPath *)indexPath {
+    if (items.count <= 0) {
+        NSLog(@"At least one item!!!");
+        return;
+    }
+    else if (items.count > (NSInteger)CGRectGetWidth(self.frame)/80) {
+        NSLog(@"Can not be more than %ld items!!!",(NSInteger)CGRectGetWidth(self.frame)/80);
+        return;
+    }
     NSArray *visibleIndexPaths = [self indexPathsForVisibleRows];
     __block BOOL flag = NO;
     [visibleIndexPaths enumerateObjectsUsingBlock:^(NSIndexPath *ip, NSUInteger idx, BOOL *stop) {
@@ -152,7 +160,7 @@ static const char *PopoverTapGestureKey = "PopoverTapGestureKey";
         [self addSubview:popover];
         [items enumerateObjectsUsingBlock:^(PopoverItem *obj, NSUInteger idx, BOOL *stop) {
             PopoverButton *button = [PopoverButton buttonWithType:UIButtonTypeCustom];
-            button.frame = CGRectMake(CGRectGetWidth(popover.frame)/4*idx, 0, CGRectGetWidth(popover.frame)/items.count, CGRectGetHeight(popover.frame)-8);
+            button.frame = CGRectMake(CGRectGetWidth(popover.frame)/items.count *idx, 0, CGRectGetWidth(popover.frame)/items.count, CGRectGetHeight(popover.frame)-8);
             button.tag = idx;
             button.backgroundColor = [UIColor clearColor];
             [button setTitle:obj.name forState:UIControlStateNormal];
@@ -219,9 +227,8 @@ static const char *PopoverTapGestureKey = "PopoverTapGestureKey";
     UITapGestureRecognizer *tap = objc_getAssociatedObject(self, PopoverTapGestureKey);
     [self removeGestureRecognizer:tap];
     objc_setAssociatedObject(self, PopoverTapGestureKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self, PopoverItemsKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
-
-
 
 //Blend image with whitecolor.
 

@@ -46,7 +46,7 @@
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 50;
+    return 60;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -93,8 +93,8 @@
     NSArray *images = @[@"popover_reply",@"popover_share",@"popover_copy",@"popover_report"];
     NSMutableArray *items = [NSMutableArray array];
     for (NSInteger i = 0; i<names.count; i++) {
-        PopoverItem *item = [[PopoverItem alloc]initWithName:names[i] image:[UIImage imageNamed:images[i]] selectedHandler:^(PopoverItem *item) {
-            NSLog(@"name:%@ indexPath%@",item.name,indexPath);
+        PopoverItem *item = [[PopoverItem alloc]initWithName:names[i] image:[UIImage imageNamed:images[i]] selectedHandler:^(PopoverItem *popoverItem) {
+            NSLog(@"%@===%@",popoverItem.name,indexPath);
         }];
         [items addObject:item];
     }
