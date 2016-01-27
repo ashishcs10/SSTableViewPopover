@@ -90,7 +90,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSArray *names = @[@"Reply",@"Share",@"Copy",@"Report"];
-    NSArray *images = @[@"hahaha",@"popover_share",@"popover_copy",@"popover_report"];
+    NSArray *images = @[@"popover_reply",@"popover_share",@"popover_copy",@"popover_report"];
     NSMutableArray *items = [NSMutableArray array];
     for (NSInteger i = 0; i<names.count; i++) {
         PopoverItem *item = [[PopoverItem alloc]initWithName:names[i] image:[UIImage imageNamed:images[i]] selectedHandler:^(PopoverItem *popoverItem) {
