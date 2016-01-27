@@ -1,4 +1,5 @@
 # SSTableViewPopover
+![](https://raw.githubusercontent.com/immrss/SSTableViewPopover/master/Demo.gif)
 
 ## Usage
 `#import "UITableView+Popover.h"`
