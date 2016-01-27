@@ -2,7 +2,8 @@
 
 ## Usage
 `#import "UITableView+Popover.h"`
-`UITableView+Popover.h`is a category of UITableView.You can use it simply like:
+`UITableView+Popover.h`
+
 ```objective-c
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     PopoverItem *item = [[PopoverItem alloc]initWithName:@"Item" image:[UIImage imageNamed:@"example.png"] selectedHandler:^(PopoverItem *popoverItem) {
